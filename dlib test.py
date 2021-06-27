@@ -5,9 +5,10 @@ import pickle
 import cv2
 import os
 
+dataset = ''
 
 print("[INFO] quantifying faces...")
-imagePaths = list(paths.list_images(args["dataset"]))
+imagePaths = list(paths.list_images(dataset))
 # initialize the list of known encodings and known names
 knownEncodings = []
 knownNames = []
@@ -24,7 +25,7 @@ for (i, imagePath) in enumerate(imagePaths):
 # detect the (x, y)-coordinates of the bounding boxes
 # corresponding to each face in the input image
     boxes = face_recognition.face_locations(rgb,
-                                            model=args["detection_method"])
+                                            model='cnn')
 # compute the facial embedding for the face
     encodings = face_recognition.face_encodings(rgb, boxes)
 # loop over the encodings
@@ -36,6 +37,6 @@ for (i, imagePath) in enumerate(imagePaths):
 
 print("[INFO] serializing encodings...")
 data = {"encodings": knownEncodings, "names": knownNames}
-f = open(, "wb")
+f = open('encodings.pickle', "wb")
 f.write(pickle.dumps(data))
 f.close()

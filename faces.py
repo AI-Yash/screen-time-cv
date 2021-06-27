@@ -19,11 +19,11 @@ while True:
     # grab the frame from the threaded video stream and resize it
     # to have a maximum width of 400 pixels
     frame = vs.read()
-    frame2 = imutils.resize(frame, width=400)
+    frame2 = imutils.resize(frame, width=1000)
     # grab the frame dimensions and convert it to a blob
-    (h, w) = frame.shape[:2]
+    (h, w) = frame2.shape[:2]
     blob = cv2.dnn.blobFromImage(cv2.resize(
-        frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
+        frame2, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
 
     g += 1
     net.setInput(blob)
@@ -45,18 +45,17 @@ while True:
         box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
 
         (startX, startY, endX, endY) = box.astype("int")
-        main = frame[startY:endY, startX:endX]
 
-        # draw the bounding box of the face along with the associated
+# draw the bounding box of the face along with the associated
         # probability
         text = "{:.2f}%".format(confidence * 100)
         y = startY - 10 if startY - 10 > 10 else startY + 10
 
-    cv2.imwrite("./data/" + str(g) + ".jpg", main)
-    cv2.imshow("Frame", frame)
+    cv2.imshow("Frame", frame2)
 
-    key = cv2.waitKey(50) & 0xFF
-
+    print(box)
+    key = cv2.waitKey(1) & 0xFF
+    time.sleep(3)
     # if the `q` key was pressed, break from the loop
     if key == ord("q"):
         break
