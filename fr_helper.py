@@ -26,9 +26,9 @@ class KnownFaceEncodings:
         images = []  # for temporary storage
         KNOWN_FACE_FOLDER = self.DATA_FOLDER + '/' + face_folder + '/'
         
-        if (self.DATA_FILE in os.listdir(self.DATA_FOLDER)) and not new_image_added:  
+        if (self.is_datafile_available()) and not new_image_added:  
             # read the data if no new image added or removed
-            self.data = np.load(self.DATA_FOLDER + self.DATA_FILE, allow_pickle=True) 
+            self.data = self.load_data_from_file() 
 
         else:
             face_images = os.listdir(KNOWN_FACE_FOLDER)  # Get every face image names
@@ -42,7 +42,13 @@ class KnownFaceEncodings:
 
             np.save(self.DATA_FOLDER + self.DATA_FILE, self.data)
 
-    def get_face_encoding(path:str) -> np.array:
+    def load_data_from_file(self):
+        np.load(self.DATA_FOLDER + self.DATA_FILE, allow_pickle=True)
+
+    def is_datafile_available(self):
+        return self.DATA_FILE in os.listdir(self.DATA_FOLDER)
+
+    def get_face_encoding(self, path:str) -> np.array:
         '''Get face encoding of the given path'''
         image = face_recognition.load_image_file(path)    
         return face_recognition.face_encodings(image)[0]  # return encoded face
