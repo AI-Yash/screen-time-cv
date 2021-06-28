@@ -11,10 +11,12 @@ screen_time = False  # is looking towards the screen?
 screen_up_time = datetime.timedelta(0, 0, 0)
 webcam = cv2.VideoCapture(0, cv2.CAP_DSHOW)
 known_faces = KnownFaceEncodings(True)
-
+init_time = datetime.datetime.now()
 
 users = {None:{'screentime':datetime.timedelta(0)}}
 
+
+# create object for all the people avaialable
 def add_user(name):
     users[name] = {'screentime': datetime.timedelta(0)}
 
@@ -36,7 +38,7 @@ def get_name(frame:np.array, face_loc:List[int]):
     return None
 
 
-last_iter_people = set()
+last_iter_people = set()  # to avoid NameError
 
 while True:
     try:
@@ -62,8 +64,9 @@ while True:
         for face_loc in faces:
             name = get_name(frame, face_loc)
             people.add(name)
-            users[name]['screen_time'] = True
-            users[name]['start_time'] = datetime.datetime.now()
+            if not users[name].get('screen_time'):
+                users[name]['screen_time'] = True
+                users[name]['start_time'] = datetime.datetime.now()
         # screen_time = True
         # start_time = datetime.datetime.now()
 
@@ -95,6 +98,7 @@ while True:
         print('Thank you for Using Face Screen Time')
         print('*-'*20)
         webcam.release()
+        print(datetime.datetime.now() - init_time)
         break
 
     # except Exception as e:

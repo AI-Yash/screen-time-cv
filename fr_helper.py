@@ -18,13 +18,13 @@ class KnownFaceEncodings:
     KnownFaceEncondings class will help in managing the encodings of the Known faces
     """
     # Constants / static members
-    DATA_FOLDER = './data'
+    DATA_FOLDER = './data/'
     DATA_FILE = 'known-faces.npy'
 
 
     def __init__(self, new_image_added:bool = False, face_folder:str = 'people'):
         images = []  # for temporary storage
-        KNOWN_FACE_FOLDER = self.DATA_FOLDER + '/' + face_folder + '/'
+        KNOWN_FACE_FOLDER = self.DATA_FOLDER + face_folder + '/'
         
         if (self.is_datafile_available()) and not new_image_added:  
             # read the data if no new image added or removed
