@@ -44,6 +44,25 @@ def display_screen_time():
 
         print(f'{user}: {users[user]["screentime"]}')
 
+def save_data():
+    with open('./data/log.csv', 'w') as datafile:
+        for name in users.keys():
+            # if name is None: continue
+
+            datafile.write(f"{name},{users[name]['screentime'].seconds}\n")
+
+def get_data():
+    with open('./data/log.csv') as datafile:
+        data = datafile.readlines()
+    
+    for row in data:
+        row = row.replace('\n', ' ')
+        d = row.split(',')
+        users[d[0]]['screentime'] = datetime.timedelta(seconds=int(d[1]))
+    
+print(get_data())
+print(users)
+# exit()
 
 last_iter_people = set()  # to avoid NameError
 
@@ -82,17 +101,17 @@ while True:
         time.sleep(1)
 
     except KeyboardInterrupt:
-        print('*-'*20)
-        # print(F"{screen_up_time} is your total up time")
-        print(users)
-        print('Thank you for Using Face Screen Time')
-        print('*-'*20)
-
         # just a check before closing the programme
-        for p in list(last_iter_people - people):
+        for p in list(people):
             if users[p]['screen_time']:
                 users[p]['screen_time'] = False
                 users[p]['screentime'] += datetime.datetime.now() - users[p]['start_time']
+        
+        print('*-'*20)
+        print(users)
+        save_data()
+        print('Thank you for Using Face Screen Time')
+        print('*-'*20)
 
         webcam.release()
        
