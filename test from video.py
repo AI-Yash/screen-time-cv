@@ -2,17 +2,11 @@
 from imutils.video import VideoStream
 from imutils.video import FPS
 import face_recognition as fr
-
 import imutils
 import pickle
 import time
 import cv2
 import numpy as np
-
-prototxtPath = "./files/deploy.prototxt"
-weightsPath = "./files/res10_300x300_ssd_iter_140000.caffemodel"
-print("[INFO] loading model...")
-net = cv2.dnn.readNetFromCaffe(prototxtPath, weightsPath)
 
 print("[INFO] loading encodings + face detector...")
 data = pickle.loads(open('encodings.pickle', "rb").read())
@@ -27,30 +21,15 @@ fps = FPS().start()
 
 while True:
     frame = vs.read()
-    frame2 = imutils.resize(frame, width=500)
-    (h, w) = frame.shape[:2]
-    blob = cv2.dnn.blobFromImage(cv2.resize(
-        frame, (300, 300)), 1.0, (300, 300), (104.0, 177.0, 123.0))
     rgb = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-    net.setInput(blob)
-    detections = net.forward()
-    for i in range(0, detections.shape[2]):
-        # extract the confidence (i.e., probability) associated with the
-        # prediction
-        confidence = detections[0, 0, i, 2]
+    rgb = imutils.resize(frame, width=750)
+    r = frame.shape[1] / float(rgb.shape[1])
+    # detect the (x, y)-coordinates of the bounding boxes
+    # corresponding to each face in the input frame, then compute
+    # the facial embeddings for each face
+    boxes = fr.face_locations(rgb, model='hog')
 
-        # filter out weak detections by ensuring the `confidence` is
-        # greater than the minimum confidence
-        if confidence < 0.5:
-            continue
-
-        # compute the (x, y)-coordinates of the bounding box for the
-        # object
-        box = detections[0, 0, i, 3:7] * np.array([w, h, w, h])
-
-        (startX, startY, endX, endY) = box.astype("int")
-
-    encodings = fr.face_encodings(rgb, box)
+    encodings = fr.face_encodings(rgb, boxes)
     names = []
 
     for encoding in encodings:
@@ -79,7 +58,7 @@ while True:
         # update the list of names
         names.append(name)
 
-    for ((top, right, bottom, left), name) in zip(box, names):
+    for ((top, right, bottom, left), name) in zip(boxes, names):
         # draw the predicted face name on the image
         cv2.rectangle(frame, (left, top), (right, bottom),
                       (0, 255, 0), 2)
@@ -95,9 +74,6 @@ while True:
     # update the FPS counter
     fps.update()
 
-fps.stop()
-print(f"[INFO] elapsed time: {fps.elapsed:.2f}")
-print(f"[INFO] approx. FPS: {fps.fps:.2f}")
 # do a bit of cleanup
 cv2.destroyAllWindows()
 vs.stop()

@@ -5,8 +5,7 @@ import pickle
 import cv2
 import os
 
-dataset = ''
-
+dataset = './dataset/'
 print("[INFO] quantifying faces...")
 imagePaths = list(paths.list_images(dataset))
 # initialize the list of known encodings and known names
