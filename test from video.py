@@ -109,17 +109,21 @@ while True:
             # update the list of names
             names.add(dname)
             
+            
+    
+            
             if not users[name].get('screen_time'):
                 users[name]['screen_time'] = True
                 users[name]['start_time'] = datetime.datetime.now()
                 
         for p in list(last_iter_people - names):
-            # print(p)
+            print(p)
             if users[p]['screen_time']:
                 users[p]['screen_time'] = False
                 users[p]['screentime'] += datetime.datetime.now() - users[p]['start_time']
         
-        last_iter_people = people.copy()  # helper to make the logic work
+        last_iter_people = names.copy()  # helper to make the logic work
+        
         # all the people detected are stored in people:set
         # the names of people is copied to last_iter_people:set
         # in the next iteration we can calclate the missing people
@@ -132,7 +136,7 @@ while True:
                     
     except KeyboardInterrupt:
         # just a check before closing the programme
-        for p in list(people):
+        for p in list(names):
             if users[p]['screen_time']:
                 users[p]['screen_time'] = False
                 users[p]['screentime'] += datetime.datetime.now() - users[p]['start_time']
