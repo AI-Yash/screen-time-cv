@@ -1,7 +1,7 @@
 
 # AI Screen Time Measurement System
 
-In this pandemic our screen time has increased, measuring it becomes crucial, we have apps for that, but they can't measure time of every individual using the device, to solve this we have created a screen time measurement system which is powered by AI. This system can accurately measure screen time of multiple users, and output that time in a database.
+In this pandemic our screen time has increased, measuring it becomes crucial, we have apps for that, but they can't measure the time of every individual using the device, to solve this we have created a screen time measurement system which is powered by AI. This system can accurately measure screen time of multiple users, and output that time in a database.
 
 ### [website](https://sites.google.com/view/ai-screen-time/home)
 
