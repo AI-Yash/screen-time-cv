@@ -52,7 +52,7 @@ while True:
         text = "{:.2f}%".format(confidence * 100)
         y = startY - 10 if startY - 10 > 10 else startY + 10
 
-    cv2.imwrite("./dataset/mitthu/" + str(g) + ".jpg", main)
+    cv2.imwrite("./dataset/user/" + str(g) + ".jpg", main)
     cv2.imshow("Frame", frame)
 
     key = cv2.waitKey(100) & 0xFF
