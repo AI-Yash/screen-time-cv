@@ -10,7 +10,7 @@ In this pandemic our screen time has increased, measuring it becomes crucial, we
  
 ## Authors
 
-[@yashppawar](https://www.github.com/yashppawar) and [@porus-creator](https://www.github.com/porus-creator)
+[@yashppawar](https://www.github.com/yashppawar) and [@YashVardhan-AI](https://www.github.com/porus-creator)
 
   
 ## Installation
