@@ -6,7 +6,6 @@ import imutils
 import pickle
 import time
 import cv2
-import numpy as np
 import datetime
 
 
