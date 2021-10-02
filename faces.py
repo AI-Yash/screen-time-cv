@@ -1,14 +1,23 @@
 from imutils.video import VideoStream
 import numpy as np
-
+import argparse
 import imutils
 import time
 import cv2
+import os
+import face_recognition as fr
+import pickle
+
+ap = argparse.ArgumentParser()
+ap.add_argument("-n", "--name", required=True,
+	help="name of user to add")
+args = vars(ap.parse_args())
 
 prototxtPath = "./files/deploy.prototxt"
 weightsPath = "./files/res10_300x300_ssd_iter_140000.caffemodel"
 print("[INFO] loading model...")
 net = cv2.dnn.readNetFromCaffe(prototxtPath, weightsPath)
+user = args["name"]
 
 # initialize the video stream and allow the camera sensor to warmup
 print("[INFO] starting video stream...")
@@ -52,7 +61,7 @@ while True:
         text = "{:.2f}%".format(confidence * 100)
         y = startY - 10 if startY - 10 > 10 else startY + 10
 
-    cv2.imwrite("./dataset/mitthu/" + str(g) + ".jpg", main)
+    cv2.imwrite("./dataset/" + user + "/" + str(g) + ".jpg", main)
     cv2.imshow("Frame", frame)
 
     key = cv2.waitKey(100) & 0xFF
@@ -62,3 +71,26 @@ while True:
         break
 
 cv2.destroyAllWindows()
+
+print("[INFO] Training images")
+
+imagePaths = list(imutils.paths.list_images('/dataset/'))
+# initialize the list of known encodings and known names
+knownEncodings = []
+knownNames = []
+
+for (i, imagePath) in enumerate(imagePaths):
+    name = imagePath.split(os.path.sep)[-2]
+    image = cv2.imread(imagePath)
+    rgb = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    boxes = fr.face_locations(rgb, model="hog")
+    encodings = fr.face_encodings(rgb, boxes)
+    for encoding in encodings:
+        knownEncodings.append(encoding)
+        knownNames.append(name)
+        
+print("[INFO] serializing encodings...")
+data = {"encodings": knownEncodings, "names": knownNames}
+f = open(args["encodings"], "wb")
+f.write(pickle.dumps(data))
+f.close()
